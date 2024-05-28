@@ -5,6 +5,7 @@ import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
 import { requestOpenai } from "../../common";
+import { json } from "stream/consumers";
 
 const ALLOWD_PATH = new Set(Object.values(OpenaiPath));
 
@@ -44,6 +45,8 @@ async function handle(
       },
     );
   }
+  let jsonData=await req.clone().text()
+  console.log("",JSON.parse(jsonData))
 
   const authResult = auth(req, ModelProvider.GPT);
   if (authResult.error) {

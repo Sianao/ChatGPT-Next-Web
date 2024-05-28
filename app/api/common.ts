@@ -3,6 +3,7 @@ import { getServerSideConfig } from "../config/server";
 import { DEFAULT_MODELS, OPENAI_BASE_URL, GEMINI_BASE_URL } from "../constant";
 import { collectModelTable } from "../utils/model";
 import { makeAzurePath } from "../azure";
+import { json } from "stream/consumers";
 
 const serverConfig = getServerSideConfig();
 
@@ -43,7 +44,6 @@ export async function requestOpenai(req: NextRequest) {
 
   console.log("[Proxy] ", path);
   console.log("[Base Url]", baseUrl);
-
   const timeoutId = setTimeout(
     () => {
       controller.abort();
@@ -91,7 +91,6 @@ export async function requestOpenai(req: NextRequest) {
       fetchOptions.body = clonedBody;
 
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
-
       // not undefined and is false
       if (modelTable[jsonBody?.model ?? ""].available === false) {
         return NextResponse.json(
